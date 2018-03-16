@@ -3,6 +3,10 @@ import org.scalatest.{Matchers, FunSuite}
 /** @version 1.3.0 */
 class AcronymTest extends FunSuite with Matchers {
 
+  test("empty") {
+    Acronym.abbreviate("") should be ("")
+  }
+
   test("basic") {
     Acronym.abbreviate("Portable Network Graphics") should be ("PNG")
   }
