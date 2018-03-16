@@ -5,7 +5,7 @@ import scala.annotation.tailrec
   */
 object AllYourBase {
 
-  def rebase(inputBase: Int, inputDigits: List[Int], outputBase: Int) = {
+  def rebase(inputBase: Int, inputDigits: List[Int], outputBase: Int): Option[List[Int]] = {
 
     def toBase10(digits: List[Int]): BigInt =
       digits.foldLeft(BigInt(0))((base10, digit) => base10 * inputBase + digit)
