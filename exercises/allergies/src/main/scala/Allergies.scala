@@ -5,13 +5,11 @@ import Allergen.Allergen
   */
 object Allergies {
 
-  val allergenList: Set[Allergen] = Allergen.values
+  private lazy val allergenList: Set[Allergen] = Allergen.values
 
-  println(allergenList.map(_.name).mkString(", "))
+  def allergicTo(allergen: Allergen, score: Int): Boolean = allergen.allergicTo(score)
 
-  def allergicTo(allergen: Allergen, score: Int): Boolean = (allergen.id & score) != 0
-
-  def list(score: Int): List[Allergen] = allergenList.filter(allergicTo(_, score)).toList
+  def list(score: Int): List[Allergen] = allergenList.filter(_.allergicTo(score)).toList
 }
 
 object Allergen extends Enumeration {
@@ -27,6 +25,7 @@ object Allergen extends Enumeration {
   val Cats: Allergen = Value(128)
 
   implicit class AllergenWrapper(val allergen: Allergen) {
+    def allergicTo(score: Int): Boolean = (allergen.id & score) != 0
     def name: String = allergen.toString
   }
 
