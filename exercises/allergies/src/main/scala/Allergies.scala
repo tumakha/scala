@@ -26,6 +26,7 @@ object Allergen extends Enumeration {
 
   implicit class AllergenWrapper(val allergen: Allergen) {
     def allergicTo(score: Int): Boolean = (allergen.id & score) != 0
+
     def name: String = allergen.toString
   }
 
