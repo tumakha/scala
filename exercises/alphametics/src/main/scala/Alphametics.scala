@@ -22,11 +22,8 @@ object Alphametics {
     def isSolution(solution: Solution): Boolean =
       boolExpr.eval(solution) getOrElse false
 
-    def toSolution(tenChars: String): Solution =
-      tenChars.zipWithIndex.toMap filterKeys (_.isLetter)
-
-    val tenChars = uniqueLetters ++ Seq.fill(10 - uniqueLetters.size)('.')
-    tenChars.permutations map toSolution find isSolution
+    (0 to 9).combinations(uniqueLetters.length).flatMap(_.permutations)
+      .map(permutation => uniqueLetters.zip(permutation).toMap) find isSolution
   }
 }
 
@@ -59,10 +56,10 @@ object ExpressionParser extends RegexParsers {
     word | number
 
   private val word: Parser[Word] =
-    "[A-Z]+".r ^^ (Word(_))
+    "[A-Z]+".r ^^ Word
 
   private val number: Parser[Number] =
-    "[0-9]+".r ^^ (n =>(Number(n.toLong)))
+    "[0-9]+".r ^^ (n => Number(n.toLong))
 
   private val plus: Parser[(Expression[Long], Expression[Long]) => Expression[Long]] =
     "+"  ^^ const(Plus(_, _))
@@ -82,7 +79,7 @@ sealed trait Expression[T] {
 }
 
 case class Word(word: String) extends Expression[Long] {
-  override def eval(solution: Solution) =
+  override def eval(solution: Solution): Option[Long] =
     if (solution(word(0)) == 0) None
     else Some((word map solution mkString) toLong)
 }
@@ -95,7 +92,7 @@ trait Operation[A,B] extends Expression[B] {
   val op: (A, A) => B
   val left: Expression[A]
   val right: Expression[A]
-  override def eval(solution: Solution) =
+  override def eval(solution: Solution): Option[B] =
     for {
       l <- left.eval(solution)
       r <- right.eval(solution)
