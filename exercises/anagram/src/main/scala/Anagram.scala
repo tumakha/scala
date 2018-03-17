@@ -4,12 +4,15 @@
 object Anagram {
 
   def anagrams(word: String, anagrams: Seq[String]): Seq[String] = {
-    val wLowerCase = word.toLowerCase
-    val wSorted = wLowerCase.sorted
-
-    def isAnagram(aLower: String): Boolean = wLowerCase != aLower && wSorted == aLower.sorted
-
-    anagrams.filter(a => isAnagram(a.toLowerCase))
+    val w = Word(word)
+    anagrams.filter(Word(_).isAnagram(w))
   }
 
+}
+
+case class Word(word: String) {
+  lazy val lowerCase: String = word.toLowerCase
+  lazy val sorted: String = lowerCase.sorted
+
+  def isAnagram(word: Word): Boolean = lowerCase != word.lowerCase && sorted == word.sorted
 }
